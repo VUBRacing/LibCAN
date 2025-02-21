@@ -1,0 +1,12 @@
+{
+    "name": "VUBRacing_CAN_Library",
+    "version": "1.0.0",
+    "description": "Library to interface with CAN in an electric Formula Student racecar",
+    "keywords": ["custom", "embedded", "CAN", "Formula Student"],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/VUBRacing/LibCAN.git"
+    },
+    "frameworks": "arduino",
+    "platforms": "*",
+}
