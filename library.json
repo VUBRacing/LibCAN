@@ -8,5 +8,5 @@
       "url": "https://github.com/VUBRacing/LibCAN.git"
     },
     "frameworks": "arduino",
-    "platforms": "*",
+    "platforms": "*"
 }
