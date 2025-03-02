@@ -7,7 +7,7 @@
 struct Message {
 	uint16_t id;
 	uint16_t packet_size;
-	std::vector<uint16_t> data_field;
+	std::vector<uint8_t> data_field;
 };
 
 class CANLibrary {
