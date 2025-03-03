@@ -16,6 +16,8 @@
 
 // PreCharge
 #define PRECHARGE_STATUS_ID 0x006
+// reg ids for the precharge
+#define PRECHARGE_STATUS_REG 0x20
 // Message form precharge
 #define PRECHARGE_MESSAGE_ON 0x01
 #define PRECHARGE_MESSAGE_OFF 0x02
@@ -43,6 +45,16 @@
 #define INV2_RX_ID 0x201
 #define INV2_TX_ID 0x181
 
+// RegIDs for the invertor
+#define SPEED_CMD_RAMP_REG 0x32
+#define SPEED_ACTUAL_REG  0x30
+#define IQ_CMD_RAMP_REG 0x22
+#define IQ_ACTUAL_REG 0x27
+#define VOUT_REG 0x8A
+#define VDC_BUS_REG 0x66
+#define T_IGBT_REG 0x4A
+#define T_MOTOR_REG 0x49
+
 // BrakeSens Analog Values
 #define BRAKESENS1_AVAL_ID 0x300
 #define BRAKESENS2_AVAL_ID 0x301
@@ -52,12 +64,17 @@
 #define BMS_CURRENT_ID 0x401
 #define BMS_TEMP_ID 0x402
 
+// reg ids  for the BMS
+#define BMS_SEG1_REG1 0x30
+#define BMS_SEG1_REG2 0x31
+#define BMS_SEG2_REG1 0x40
+#define BMS_SEG2_REG2 0x41
+#define BMS_SEG3_REG3 0x50
+#define BMS_SEG3_REG3 0x51
+
+
 // BrakeLight
 #define BL_STATUS_ID 0x500
 
 // GPS:
-
-
-
-
 #endif /* CAN_IDs_H_ */
