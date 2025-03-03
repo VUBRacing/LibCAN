@@ -58,10 +58,10 @@
 #define T_MOTOR_REG 0x49
 
 // BrakeSens Analog Values
-#define USER_ID = 0x300
+#define USER_ID 0x300
 // regids for the user
-#define BRAKE_REG = 0x20
-#define APPS_REG = 0x30
+#define BRAKE_REG 0x20
+#define APPS_REG 0x30
 
 #define BRAKESENS1_AVAL_ID 0x302
 #define BRAKESENS2_AVAL_ID 0x303
