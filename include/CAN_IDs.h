@@ -18,6 +18,8 @@
 #define PRECHARGE_STATUS_ID 0x006
 // reg ids for the precharge
 #define PRECHARGE_STATUS_REG 0x20
+#define PRECHARGE_VOLTAGE_BAT_REG 0x30
+#define PRECHARGE_VOLTAGE_TS_REG 0x40
 // Message form precharge
 #define PRECHARGE_MESSAGE_ON 0x01
 #define PRECHARGE_MESSAGE_OFF 0x02
@@ -56,8 +58,13 @@
 #define T_MOTOR_REG 0x49
 
 // BrakeSens Analog Values
-#define BRAKESENS1_AVAL_ID 0x300
-#define BRAKESENS2_AVAL_ID 0x301
+#define USER_ID = 0x300
+// regids for the user
+#define BRAKE_REG = 0x20
+#define APPS_REG = 0x30
+
+#define BRAKESENS1_AVAL_ID 0x302
+#define BRAKESENS2_AVAL_ID 0x303
 
 // AMS/BMS
 #define BMS_VOLTAGE_ID 0x400
