@@ -6,9 +6,9 @@
  */
 
 // messages for dashboard
-const Message MESSAGE_dash_board_switch_on = {DASH_BOARD_INFO, 1, {DASH_BOARD_SWITCH_R2D_ON}};
-const Message MESSAGE_dash_board_switch_off = {DASH_BOARD_INFO, 1, {DASH_BOARD_SWITCH_R2D_OFF}};
-const Message MESSAGE_dash_board_button_on = {DASH_BOARD_INFO, 1, {DASH_BOARD_BUTTON_R2D_ON}};
+const Message MESSAGE_dash_board_R2D_ON_OFF_pressed = {DASH_BOARD_INFO, 1, {DASH_BOARD_SWITCH_R2D_ON}};
+const Message MESSAGE_dash_board_R2D_activate = {DASH_BOARD_INFO, 1, {DASH_BOARD_BUTTON_R2D_ON}};
+
 const Message MESSAGE_dash_board_led_R2D_on = {DASH_BOARD_INFO, 1, {DASH_BOARD_LED_R2D_ON}};
 const Message MESSAGE_dash_board_led_R2D_off = {DASH_BOARD_INFO, 1, {DASH_BOARD_LED_R2D_OFF}};
 const Message MESSAGE_dash_board_led_CAN_on = {DASH_BOARD_INFO, 1, {DASH_BOARD_LED_CAN_ON}};
