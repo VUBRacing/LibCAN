@@ -1,4 +1,4 @@
- #ifndef CAN_IDs_H_
+#ifndef CAN_IDs_H_
 #define CAN_IDs_H_
 
 // CAN SETUP:
@@ -59,7 +59,20 @@
 
 // BrakeSens Analog Values
 #define USER_ID 0x300
+// RegIDs voor de states
+#define STATE_REG 0x01
+
+#define STATE_OFF_REG  0x01
+#define STATE_BEGINSEQUENCE_BEFORE_PRECHARGE_REG 0x02
+#define STATE_PRECHARGE_REG 0x03
+#define STATE_BEGINSEQUENCE_AFTER_PRECHARGE_REG 0x04
+#define STATE_CALIBRATION_MIN_REG 0x05
+#define STATE_CALIBRATION_MAX_REG 0x06
+#define STATE_LAST_STEP_REG 0x07
+#define STATE_ON_REG 0x08
+#define STATE_TEST_REG 0x09
 // regids for the user
+#define USER_DATA_REG 0x02
 #define BRAKE_REG 0x20
 #define APPS_REG 0x30
 
