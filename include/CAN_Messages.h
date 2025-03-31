@@ -13,6 +13,7 @@ const Message MESSAGE_dash_board_R2D_activate = {DASH_BOARD_INFO, 1, {DASH_BOARD
 const Message MESSAGE_precharge_on = {PRECHARGE_STATUS_ID, 1, {PRECHARGE_MESSAGE_ON}};
 const Message MESSAGE_precharge_off = {PRECHARGE_STATUS_ID, 1, {PRECHARGE_MESSAGE_OFF}};
 
+// messages to pass the states
 const Message MESSAGE_USER_State_Off = {USER_ID, 2,{STATE_REG, STATE_OFF_REG}};
 const Message MESSAGE_USER_State_before_precharge = {USER_ID, 2,{STATE_REG, STATE_BEGINSEQUENCE_BEFORE_PRECHARGE_REG}};
 const Message MESSAGE_USER_State_after_precharge = {USER_ID, 2,{STATE_REG, STATE_BEGINSEQUENCE_AFTER_PRECHARGE_REG}};
@@ -23,4 +24,9 @@ const Message MESSAGE_USER_State_last_step = {USER_ID, 2,{STATE_REG, STATE_LAST_
 const Message MESSAGE_USER_State_on = {USER_ID, 2,{STATE_REG, STATE_ON_REG}};
 const Message MESSAGE_USER_State_test = {USER_ID, 2,{STATE_REG, STATE_TEST_REG}};
 
+// messages to pass an Error
+const Message MESSAGE_ERROR_10percent = {ERROR_ID, 1, {ERROR_10percent}};
+const Message MESSAGE_ERROR_INVERTER = {ERROR_ID, 1, {Inverter_ERROR}};
+const Message MESSAGE_ERROR_PRECHARGE =  {ERROR_ID, 1, {Precharge_ERROR}};
+const Message MESSAGE_ERROR_BMS = {ERROR_ID, 1, {BMS_ERROR}};
 #endif
