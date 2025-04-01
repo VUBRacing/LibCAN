@@ -93,10 +93,18 @@
 // reg ids  for the BMS
 #define BMS_SEG1_REG1 0x30
 #define BMS_SEG1_REG2 0x31
+#define BMS_SEG1_REG3 0x32
+#define BMS_SEG1_REG4 0x33
+
 #define BMS_SEG2_REG1 0x40
 #define BMS_SEG2_REG2 0x41
-#define BMS_SEG3_REG3 0x50
-#define BMS_SEG3_REG3 0x51
+#define BMS_SEG2_REG3 0x42
+#define BMS_SEG2_REG4 0x43
+
+#define BMS_SEG3_REG1 0x50
+#define BMS_SEG3_REG2 0x51
+#define BMS_SEG3_REG3 0x52
+#define BMS_SEG3_REG4 0x53
 
 
 // BrakeLight
