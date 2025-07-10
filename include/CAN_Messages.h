@@ -29,4 +29,6 @@ const Message MESSAGE_ERROR_10percent = {ERROR_ID, 1, {ERROR_10percent}};
 const Message MESSAGE_ERROR_INVERTER = {ERROR_ID, 1, {Inverter_ERROR}};
 const Message MESSAGE_ERROR_PRECHARGE =  {ERROR_ID, 1, {Precharge_ERROR}};
 const Message MESSAGE_ERROR_BMS = {ERROR_ID, 1, {BMS_ERROR}};
+
+const Message MESSAGE_SDC_OPEN ={ERROR_ID,1,{SDC_OPEN}};
 #endif
