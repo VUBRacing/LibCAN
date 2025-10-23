@@ -86,26 +86,22 @@
 #define BRAKESENS1_AVAL_ID 0x302
 #define BRAKESENS2_AVAL_ID 0x303
 
-// AMS/BMS
-#define BMS_VOLTAGE_ID 0x400
-#define BMS_CURRENT_ID 0x401
-#define BMS_TEMP_ID 0x402
 
 // reg ids  for the BMS
-#define BMS_SEG1_REG1 0x30
-#define BMS_SEG1_REG2 0x31
-#define BMS_SEG1_REG3 0x32
-#define BMS_SEG1_REG4 0x33
+#define BMS_SEG1_V1 0x400
+#define BMS_SEG1_V2 0x401
+#define BMS_SEG1_V3 0x402
+#define BMS_SEG1_T  0x403
 
-#define BMS_SEG2_REG1 0x40
-#define BMS_SEG2_REG2 0x41
-#define BMS_SEG2_REG3 0x42
-#define BMS_SEG2_REG4 0x43
+#define BMS_SEG2_V1 0x410
+#define BMS_SEG2_V2 0x411
+#define BMS_SEG2_V3 0x412
+#define BMS_SEG2_T  0x413
 
-#define BMS_SEG3_REG1 0x50
-#define BMS_SEG3_REG2 0x51
-#define BMS_SEG3_REG3 0x52
-#define BMS_SEG3_REG4 0x53
+#define BMS_SEG3_V1 0x420
+#define BMS_SEG3_V2 0x421
+#define BMS_SEG3_V3 0x422
+#define BMS_SEG3_T  0x423
 
 
 // BrakeLight
