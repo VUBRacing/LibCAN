@@ -86,8 +86,9 @@
 #define BRAKESENS1_AVAL_ID 0x302
 #define BRAKESENS2_AVAL_ID 0x303
 
-
-// reg ids  for the BMS
+// ID for the master
+#define MASTER_ID 0x310
+// ids  for the BMS
 #define BMS_SEG1_V1 0x400
 #define BMS_SEG1_V2 0x401
 #define BMS_SEG1_V3 0x402
