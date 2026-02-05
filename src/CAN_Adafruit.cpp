@@ -1,10 +1,12 @@
 #include "CAN_Adafruit.h"
 
 bool CANAdafruit::init() {
-    pinMode(PIN_CAN_STANDBY, OUTPUT);
-    digitalWrite(PIN_CAN_STANDBY, false);
-    pinMode(PIN_CAN_BOOSTEN, OUTPUT);
-    digitalWrite(PIN_CAN_BOOSTEN, true);
+    #if defined(ARDUINO_FEATHER_M4_CAN)
+        pinMode(PIN_CAN_STANDBY, OUTPUT);
+        digitalWrite(PIN_CAN_STANDBY, false);
+        pinMode(PIN_CAN_BOOSTEN, OUTPUT);
+        digitalWrite(PIN_CAN_BOOSTEN, true);
+    #endif
 
     for (int i = 0; i < 10; i++) {
         if (CAN.begin(500000)) {
