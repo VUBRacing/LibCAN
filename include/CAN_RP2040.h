@@ -12,7 +12,7 @@ public:
     Message read() override;
 
 private:
-    Adafruit_MCP2515 mcp(19);
+    Adafruit_MCP2515 mcp2515(19);
 };
 
 #endif
