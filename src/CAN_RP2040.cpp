@@ -8,7 +8,7 @@ CANRP2040::CANRP2040()
 
 bool CANRP2040::init() {
     for (int i = 0; i < 10; i++) {
-        if (CAN.begin(500000)) {
+        if (CAN.begin(250000)) {
             return true;
         }
         delay(200);
