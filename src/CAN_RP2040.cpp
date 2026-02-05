@@ -1,4 +1,10 @@
-#include "CAN_RP2040"
+#include "CAN_RP2040.h"
+
+CANRP2040::CANRP2040()
+    : CAN(19) 
+{
+}
+
 
 bool CANRP2040::init() {
     for (int i = 0; i < 10; i++) {
