@@ -7,6 +7,10 @@ CANRP2040::CANRP2040()
 
 
 bool CANRP2040::init() {
+
+    pinMode(16, OUTPUT);
+    digitalWrite(16, false);
+
     for (int i = 0; i < 10; i++) {
         if (CAN.begin(250000)) {
             return true;
