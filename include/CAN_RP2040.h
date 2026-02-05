@@ -12,7 +12,7 @@ public:
     Message read() override;
 
 private:
-    Adafruit_MCP2515 mcp(PIN_CAN_CS);
+    Adafruit_MCP2515 mcp(CS_pin);
 };
 
 #endif
