@@ -12,11 +12,9 @@ struct Message {
 
 class CANLibrary {
 public:
-	virtual ~CANLibrary() = default;
-
-	virtual bool init() = 0;
-	virtual void send(Message message) = 0;
-	virtual Message read() = 0;
+	virtual bool init();
+	virtual void send(Message message);
+	virtual Message read();
 
 };
 
