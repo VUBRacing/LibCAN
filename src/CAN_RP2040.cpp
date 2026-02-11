@@ -1,18 +1,10 @@
-#include "CAN_RP2040.h"
-
-CANRP2040::CANRP2040()
-    : CAN(19) 
-{
-}
+#include "Adafruit_MCP2515.h"
 
 
 bool CANRP2040::init() {
 
-    pinMode(16, OUTPUT);
-    digitalWrite(16, false);
-
     for (int i = 0; i < 10; i++) {
-        if (CAN.begin(250000)) {
+        if (CAN.begin(500000)) {
             return true;
         }
         delay(200);

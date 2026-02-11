@@ -7,14 +7,12 @@
 
 class CANRP2040 : public CANLibrary {
 public:
-    CANRP2040();
-    
     bool init() override;
     void send(Message message) override;
     Message read() override;
 
 private:
-    Adafruit_MCP2515 CAN;
+    Adafruit_MCP2515 CAN(PIN_CAN_CS);
 };
 
 #endif
