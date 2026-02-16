@@ -2,6 +2,13 @@
 
 
 bool CANRP2040::init() {
+    SPI1.setSCK(14);
+    SPI1.setTX(15);
+    SPI1.setRX(8);
+
+
+    SPI1.begin();
+    delay(10);
 
     for (int i = 0; i < 10; i++) {
         if (CAN.begin(500000)) {
