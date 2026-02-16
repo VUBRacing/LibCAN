@@ -7,6 +7,7 @@
 
 class CANRP2040 : public CANLibrary {
 public:
+    CANRP2040(); // constructor needed
     bool init() override;
     void send(Message message) override;
     Message read() override;

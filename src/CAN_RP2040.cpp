@@ -1,4 +1,10 @@
 #include "Adafruit_MCP2515.h"
+#include "CAN_RP2040.h"
+
+CANRP2040::CANRP2040() // contruction
+    : CAN(19u, &SPI1)     
+{
+}
 
 
 bool CANRP2040::init() {
