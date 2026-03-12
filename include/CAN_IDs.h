@@ -78,6 +78,7 @@
 #define STATE_LAST_STEP_REG 0x07
 #define STATE_ON_REG 0x08
 #define STATE_TEST_REG 0x09
+#define STATE_BSPD_REG 0x10
 // regids for the user
 #define USER_DATA_REG 0x02
 #define BRAKE_REG 0x20
