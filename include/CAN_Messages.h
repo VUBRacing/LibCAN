@@ -23,7 +23,7 @@ const Message MESSAGE_USER_State_calibration_max = {USER_ID, 2,{STATE_REG, STATE
 const Message MESSAGE_USER_State_last_step = {USER_ID, 2,{STATE_REG, STATE_LAST_STEP_REG}};
 const Message MESSAGE_USER_State_on = {USER_ID, 2,{STATE_REG, STATE_ON_REG}};
 const Message MESSAGE_USER_State_test = {USER_ID, 2,{STATE_REG, STATE_TEST_REG}};
-const Message MESSAGE_USER_State_BSPD = {USER_ID, 2, {STATE_REG, STATE_BSPD_REG}}
+const Message MESSAGE_USER_State_BSPD = {USER_ID, 2, {STATE_REG, STATE_BSPD_REG}};
 
 // messages to pass an Error
 const Message MESSAGE_ERROR_10percent = {ERROR_ID, 1, {ERROR_10percent}};
