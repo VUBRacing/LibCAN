@@ -8,6 +8,13 @@
 // messages for dashboard
 const Message MESSAGE_dash_board_R2D_ON_OFF_pressed = {DASH_BOARD_INFO, 1, {DASH_BOARD_SWITCH_R2D_ON}};
 const Message MESSAGE_dash_board_R2D_activate = {DASH_BOARD_INFO, 1, {DASH_BOARD_BUTTON_R2D_ON}};
+const Message MESSAGE_dash_board_SW1_high = {DASH_BOARD_INFO, 1, {DASH_BOARD_SW1_ON}};
+const Message MESSAGE_dash_board_SW1_low = {DASH_BOARD_INFO, 1, {DASH_BOARD_SW1_OFF}};
+const Message MESSAGE_dash_board_SW2_high = {DASH_BOARD_INFO, 1, {DASH_BOARD_SW2_ON}};
+const Message MESSAGE_dash_board_SW2_low = {DASH_BOARD_INFO, 1, {DASH_BOARD_SW2_OFF}};
+
+
+
 
 // messages for precharge
 const Message MESSAGE_precharge_on = {PRECHARGE_STATUS_ID, 1, {PRECHARGE_MESSAGE_ON}};
