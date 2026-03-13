@@ -31,5 +31,9 @@ const Message MESSAGE_ERROR_INVERTER = {ERROR_ID, 1, {Inverter_ERROR}};
 const Message MESSAGE_ERROR_PRECHARGE =  {ERROR_ID, 1, {Precharge_ERROR}};
 const Message MESSAGE_ERROR_BMS = {ERROR_ID, 1, {BMS_ERROR}};
 
-const Message MESSAGE_SDC_OPEN ={ERROR_ID,1,{SDC_OPEN}};
+const Message MESSAGE_SDC_TS_box ={ERROR_ID,1,{SDC_OPEN_TS_box}};
+const Message MESSAGE_SDC_TS_box ={ERROR_ID,1,{SDC_OPEN_TSAC}};
+const Message MESSAGE_SDC_TS_box ={ERROR_ID,1,{SDC_OPEN_PEDAL}};
+
+
 #endif

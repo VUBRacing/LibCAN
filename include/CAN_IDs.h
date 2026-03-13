@@ -15,11 +15,14 @@
 // #define CAN_ERROR_ID 0x000
 
 #define ERROR_ID 0x001
-#define SDC_OPEN 0x01
-#define ERROR_10percent 0x02
-#define Inverter_ERROR 0x03
-#define Precharge_ERROR 0x04
-#define BMS_ERROR 0x05
+#define SDC_OPEN_TS_box 0x01
+#define SDC_OPEN_TSAC 0x02
+#define SDC_OPEN_PEDAL 0x03
+
+#define ERROR_10percent 0x04
+#define Inverter_ERROR 0x05
+#define Precharge_ERROR 0x06
+#define BMS_ERROR 0x07
 
 // PreCharge
 #define PRECHARGE_STATUS_ID 0x006
