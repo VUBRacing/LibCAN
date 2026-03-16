@@ -5,6 +5,8 @@
 #include "CAN_Library.h"
 #include <Adafruit_MCP2515.h>
 
+#define CAN_BUFFER_SIZE 16 
+
 class CANRP2040 : public CANLibrary {
 public:
     CANRP2040(); // constructor needed
