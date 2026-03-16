@@ -51,6 +51,8 @@ Message CANRP2040::read() {
     return result;
 }
 
+CANRP2040* CANRP2040::instance = nullptr;
+
 void CANRP2040::ISR() {
     if (instance) {
         instance->handleInterrupt();
