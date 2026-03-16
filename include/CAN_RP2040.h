@@ -19,7 +19,7 @@ public:
 
 private:
     Adafruit_MCP2515 CAN;
-    uint8_t interruptPin;
+    uint8_t interruptPin = 22;
 
     static CANRP2040* instance;
 
