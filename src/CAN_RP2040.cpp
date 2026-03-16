@@ -18,6 +18,8 @@ bool CANRP2040::init() {
 
     for (int i = 0; i < 10; i++) {
         if (CAN.begin(500000)) {
+            pinMode(interruptPin, INPUT);
+            attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, FALLING);
             return true;
         }
         delay(200);
@@ -47,4 +49,50 @@ Message CANRP2040::read() {
     CAN.readBytes(result.data_field.data(), result.packet_size);
 
     return result;
+}
+
+void CANRP2040::ISR() {
+    if (instance) {
+        instance->handleInterrupt();
+    }
+}
+
+void CANRP2040::handleInterrupt() {
+
+    Message msg;
+
+    msg.packet_size = CAN.parsePacket();
+
+    if (!msg.packet_size)
+        return;
+
+    msg.id = CAN.packetId();
+    msg.data_field.resize(msg.packet_size);
+
+    CAN.readBytes(msg.data_field.data(), msg.packet_size);
+
+    uint8_t next = (rxBuffer.head + 1) % CAN_BUFFER_SIZE;
+
+    if (next != rxBuffer.tail) { // prevent overflow
+        rxBuffer.messages[rxBuffer.head] = msg;
+        rxBuffer.head = next;
+    }
+}
+
+bool CANRP2040::available() {
+    return rxBuffer.head != rxBuffer.tail;
+}
+
+Message CANRP2040::receive() {
+
+    Message msg;
+
+    if (rxBuffer.head == rxBuffer.tail)
+        return {0,0,{}};
+
+    msg = rxBuffer.messages[rxBuffer.tail];
+
+    rxBuffer.tail = (rxBuffer.tail + 1) % CAN_BUFFER_SIZE;
+
+    return msg;
 }

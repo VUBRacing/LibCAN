@@ -12,8 +12,25 @@ public:
     void send(Message message) override;
     Message read() override;
 
+    bool available() override;
+    Message receive() override;
+
 private:
     Adafruit_MCP2515 CAN;
+    uint8_t interruptPin;
+
+    static CANRP2040* instance;
+
+    struct Buffer {
+        Message messages[CAN_BUFFER_SIZE];
+        volatile uint8_t head = 0;
+        volatile uint8_t tail = 0;
+    };
+
+    Buffer rxBuffer;
+
+    static void ISR();
+    void handleInterrupt();
 };
 
 #endif

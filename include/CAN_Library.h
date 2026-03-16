@@ -16,6 +16,8 @@ public:
 	virtual void send(Message message);
 	virtual Message read();
 
+	virtual bool available() = 0;
+	virtual Message receive() = 0;
 };
 
 #endif

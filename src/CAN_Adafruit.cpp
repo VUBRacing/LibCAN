@@ -40,3 +40,4 @@ Message CANAdafruit::read() {
 
     return result;
 }
+
