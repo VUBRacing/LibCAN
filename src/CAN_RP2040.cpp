@@ -4,6 +4,8 @@
 CANRP2040::CANRP2040() // contruction
     : CAN(19u, &SPI1)     
 {
+    instance = this; 
+ 
 }
 
 
