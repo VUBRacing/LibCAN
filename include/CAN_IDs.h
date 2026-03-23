@@ -23,6 +23,7 @@
 #define Inverter_ERROR 0x05
 #define Precharge_ERROR 0x06
 #define BMS_ERROR 0x07
+#define LV_BAT_LOW 0X08
 
 // PreCharge
 #define PRECHARGE_STATUS_ID 0x006
@@ -108,6 +109,23 @@
 #define BMS_SEG3_V3 0x422
 #define BMS_SEG3_T  0x423
 
+#define POWERDIS 0x450
+#define POWERDIS_TSAC 0x01
+#define POWERDIS_DASH 0x02 
+#define POWERDIS_TSAL 0x03
+#define POWERDIS_TSBOX 0x04
+#define POWERDIS_DTI 0x05
+#define POWERDIS_PUMP 0x06
+#define POWERDIS_SDC 0x07
+#define POWERDIS_DISCHARGE  0x08
+#define POWERDIS_VENT 0x09
+
+#define KOEL_ID 0X460
+#define KOEL_sens 0x01
+#define KOEL_PWM 0x02
+
+#define MECH_info_ID 0X470
+#define MECH_GYR 0X01
 
 // BrakeLight
 #define BL_STATUS_ID 0x500

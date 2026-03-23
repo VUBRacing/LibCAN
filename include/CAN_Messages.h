@@ -37,6 +37,7 @@ const Message MESSAGE_ERROR_10percent = {ERROR_ID, 1, {ERROR_10percent}};
 const Message MESSAGE_ERROR_INVERTER = {ERROR_ID, 1, {Inverter_ERROR}};
 const Message MESSAGE_ERROR_PRECHARGE =  {ERROR_ID, 1, {Precharge_ERROR}};
 const Message MESSAGE_ERROR_BMS = {ERROR_ID, 1, {BMS_ERROR}};
+const Message MESSAGE_ERROR_LOW_LV = {ERROR_ID, 1, {LV_BAT_LOW}};
 
 const Message MESSAGE_SDC_TS_box ={ERROR_ID,1,{SDC_OPEN_TS_box}};
 const Message MESSAGE_SDC_TSAC ={ERROR_ID,1,{SDC_OPEN_TSAC}};
