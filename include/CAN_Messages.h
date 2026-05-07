@@ -1,6 +1,7 @@
 #ifndef CAN_MESSAGES
 #define CAN_MESSAGES_
 
+#include "CAN_Library.h"
 /**
  * header to define usefull messages
  */
