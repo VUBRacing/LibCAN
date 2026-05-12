@@ -18,6 +18,7 @@
 #define SDC_OPEN_TS_box 0x01
 #define SDC_OPEN_TSAC 0x02
 #define SDC_OPEN_PEDAL 0x03
+#define SDC_OPEN 0x04
 
 #define ERROR_10percent 0x04
 #define Inverter_ERROR 0x05

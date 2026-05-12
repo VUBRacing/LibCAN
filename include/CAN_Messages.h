@@ -43,6 +43,7 @@ const Message MESSAGE_ERROR_LOW_LV = {ERROR_ID, 1, {LV_BAT_LOW}};
 const Message MESSAGE_SDC_TS_box ={ERROR_ID,1,{SDC_OPEN_TS_box}};
 const Message MESSAGE_SDC_TSAC ={ERROR_ID,1,{SDC_OPEN_TSAC}};
 const Message MESSAGE_SDC_Pedal ={ERROR_ID,1,{SDC_OPEN_PEDAL}};
+const Message MESSAGE_SDC_Open = {ERROR_ID,1,{SDC_OPEN}};
 
 
 #endif
