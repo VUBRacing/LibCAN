@@ -1,0 +1,228 @@
+VERSION "VUBR initial telemetry database"
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_:
+
+BU_: Vector__XXX BMS VCU Inverter Precharge Dashboard PowerDistribution
+
+BO_ 1 Error: 1 Vector__XXX
+ SG_ error_code : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 6 PrechargeStatus: 8 Precharge
+ SG_ precharge_register M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ precharge_status m32 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ precharge_voltage_battery m48 : 8|8@1+ (1,0) [0|255] "V" Vector__XXX
+ SG_ precharge_voltage_ts m64 : 8|8@1+ (1,0) [0|255] "V" Vector__XXX
+
+BO_ 18 AppsAnalogValues: 8 VCU
+ SG_ apps1_raw : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ apps2_raw : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 21 DashboardInfo: 1 Dashboard
+ SG_ dashboard_event : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 385 Inverter2Tx: 8 Inverter
+ SG_ inverter_register M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ inverter_iq_command_ramp m34 : 8|32@1- (0.1387684,0) [-297994910.7302912|297994910.5915228] "A" Vector__XXX
+ SG_ inverter_iq_actual m39 : 8|32@1- (0.13876843,0) [-297994975.1550106|297994975.0162422] "A" Vector__XXX
+ SG_ inverter_speed_actual m48 : 8|32@1- (1,0) [-2147483648|2147483647] "rpm" Vector__XXX
+ SG_ inverter_speed_command_ramp m50 : 8|32@1- (1,0) [-2147483648|2147483647] "rpm" Vector__XXX
+ SG_ inverter_t_motor m73 : 8|32@1- (1,0) [-2147483648|2147483647] "degC" Vector__XXX
+ SG_ inverter_t_igbt m74 : 8|32@1- (1,0) [-2147483648|2147483647] "degC" Vector__XXX
+ SG_ inverter_vdc_bus m102 : 8|32@1- (1,0) [-2147483648|2147483647] "V" Vector__XXX
+ SG_ inverter_vout m138 : 8|32@1- (1,0) [-2147483648|2147483647] "V" Vector__XXX
+
+BO_ 768 UserStatus: 8 VCU
+ SG_ user_register M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ user_brake m2 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ user_apps m2 : 8|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ user_state m1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 770 BRAKESENS1_AVAL_ID: 2 VCU
+ SG_ brake_pressure_1 : 0|16@1+ (1,0) [0|65535] "raw" Vector__XXX
+
+BO_ 771 BRAKESENS2_AVAL_ID: 2 VCU
+ SG_ brake_pressure_2 : 0|16@1+ (1,0) [0|65535] "raw" Vector__XXX
+
+BO_ 784 MasterStatus: 8 VCU
+ SG_ ts_current_raw : 0|10@1+ (1,0) [0|1023] "" Vector__XXX
+ SG_ ams_temperature_raw : 16|10@1+ (1,0) [0|1023] "" Vector__XXX
+
+BO_ 1024 BmsSegment1VoltagesA: 8 BMS
+ SG_ bms_s1_cell01_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell02_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell03_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell04_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell05_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell06_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell07_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell08_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1025 BmsSegment1VoltagesB: 8 BMS
+ SG_ bms_s1_cell09_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell10_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell11_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell12_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell13_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell14_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell15_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell16_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1026 BmsSegment1VoltagesC: 8 BMS
+ SG_ bms_s1_cell17_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell18_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell19_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell20_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell21_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell22_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell23_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s1_cell24_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1027 BmsSegment1Temperatures: 8 BMS
+ SG_ bms_s1_cell01_temperature : 0|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s1_cell02_temperature : 8|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s1_cell03_temperature : 16|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s1_cell04_temperature : 24|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s1_cell05_temperature : 32|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s1_cell06_temperature : 40|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s1_cell07_temperature : 48|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s1_cell08_temperature : 56|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+
+BO_ 1040 BmsSegment2VoltagesA: 8 BMS
+ SG_ bms_s2_cell01_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell02_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell03_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell04_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell05_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell06_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell07_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell08_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1041 BmsSegment2VoltagesB: 8 BMS
+ SG_ bms_s2_cell09_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell10_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell11_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell12_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell13_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell14_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell15_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell16_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1042 BmsSegment2VoltagesC: 8 BMS
+ SG_ bms_s2_cell17_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell18_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell19_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell20_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell21_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell22_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell23_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s2_cell24_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1043 BmsSegment2Temperatures: 8 BMS
+ SG_ bms_s2_cell01_temperature : 0|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s2_cell02_temperature : 8|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s2_cell03_temperature : 16|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s2_cell04_temperature : 24|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s2_cell05_temperature : 32|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s2_cell06_temperature : 40|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s2_cell07_temperature : 48|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s2_cell08_temperature : 56|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+
+BO_ 1056 BmsSegment3VoltagesA: 8 BMS
+ SG_ bms_s3_cell01_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell02_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell03_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell04_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell05_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell06_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell07_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell08_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1057 BmsSegment3VoltagesB: 8 BMS
+ SG_ bms_s3_cell09_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell10_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell11_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell12_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell13_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell14_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell15_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell16_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1058 BmsSegment3VoltagesC: 8 BMS
+ SG_ bms_s3_cell17_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell18_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell19_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell20_voltage : 24|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell21_voltage : 32|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell22_voltage : 40|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell23_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+ SG_ bms_s3_cell24_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
+
+BO_ 1059 BmsSegment3Temperatures: 8 BMS
+ SG_ bms_s3_cell01_temperature : 0|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s3_cell02_temperature : 8|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s3_cell03_temperature : 16|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s3_cell04_temperature : 24|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s3_cell05_temperature : 32|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s3_cell06_temperature : 40|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s3_cell07_temperature : 48|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+ SG_ bms_s3_cell08_temperature : 56|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+
+BO_ 1312 PowerDistributionStatus: 8 PowerDistribution
+ SG_ pd_lv_battery_voltage : 0|16@1+ (0.01,0) [0|20] "V" Vector__XXX
+ SG_ pd_branch_1_current : 16|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+ SG_ pd_branch_2_current : 32|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+ SG_ pd_branch_3_current : 48|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+
+BO_ 1313 PowerDistributionCurrentsA: 8 PowerDistribution
+ SG_ pd_branch_4_current : 0|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+ SG_ pd_branch_5_current : 16|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+ SG_ pd_branch_6_current : 32|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+ SG_ pd_branch_7_current : 48|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+
+BO_ 1314 PowerDistributionCurrentsB: 8 PowerDistribution
+ SG_ pd_branch_8_current : 0|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+ SG_ pd_branch_9_current : 16|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
+
+BO_ 1315 PowerDistributionAccel: 8 PowerDistribution
+ SG_ pd_accel_x : 0|16@1- (0.001,0) [-32.768|32.767] "g" Vector__XXX
+ SG_ pd_accel_y : 16|16@1- (0.001,0) [-32.768|32.767] "g" Vector__XXX
+ SG_ pd_accel_z : 32|16@1- (0.001,0) [-32.768|32.767] "g" Vector__XXX
+
+BO_ 1316 PowerDistributionGyro: 8 PowerDistribution
+ SG_ pd_gyro_x : 0|16@1- (0.01,0) [-327.68|327.67] "deg/s" Vector__XXX
+ SG_ pd_gyro_y : 16|16@1- (0.01,0) [-327.68|327.67] "deg/s" Vector__XXX
+ SG_ pd_gyro_z : 32|16@1- (0.01,0) [-327.68|327.67] "deg/s" Vector__XXX
+
+VAL_ 21 dashboard_event 1 "R2D button on" 2 "R2D switch on" 3 "R2D switch off" 4 "SW1 on" 5 "SW1 off" 6 "SW2 on" 7 "SW2 off";
+VAL_ 768 user_state 1 "off" 2 "before_precharge" 3 "precharge" 4 "after_precharge" 5 "calibration_min" 6 "calibration_max" 7 "last_step" 8 "on" 9 "test" 16 "bspd";
