@@ -10,9 +10,13 @@ public:
     bool init() override;
     void send(Message message) override;
     Message read() override;
+    bool available() override;
+    Message receive() override;
 
 private:
     CANSAME5x CAN;
+    Message pending;
+    bool hasPending = false;
 };
 
 #endif

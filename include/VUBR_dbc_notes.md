@@ -64,23 +64,89 @@ One byte dashboard event code.
 
 Current value table contains R2D and steering wheel switch events.
 
-### `BO_ 385 Inverter2Tx`
+### DTI HV500 inverter, standard ID map
 
-Register-multiplexed inverter transmit frame. The first byte is `inverter_register`; the value payload starts at byte 1.
+The new DTI/HV500 inverter uses message IDs composed from a 6-bit register/page and a 5-bit inverter node ID:
 
-Current DBC assumption:
+```cpp
+can_id = ((reg_id & 0x3F) << 5) | (inverter_id & 0x1F)
+```
 
-- payload value is little-endian signed 32-bit
-- `Iq Cmd` scale is `0.1387684 A/raw`
-- `Iq Actual` scale is `0.13876843 A/raw`
+For the current DTI vendor DBC, the inverter node ID is `4`, so the standard-ID telemetry frames are already the full bus CAN IDs:
 
-Important distinction: inverter `Iq` is q-axis/motor current. It is related to torque and inverter behavior, but it is not exactly the same as DC battery current.
+- `0x3E4` (`996`) `DtiTargetIq`
+- `0x404` (`1028`) `DtiErpmDutyVoltage`
+- `0x424` (`1060`) `DtiAcDcCurrent`
+- `0x444` (`1092`) `DtiTemperatures`
+- `0x464` (`1124`) `DtiFoc`
+- `0x484` (`1156`) `DtiMisc`
+- `0x4A4` (`1188`) `DtiMinMaxAcCurrent`
+- `0x4C4` (`1220`) `DtiMinMaxDcCurrent`
 
-Open items:
+Important: these IDs assume `inverter_id = 4`. The DBC cannot express the ID formula dynamically; it only stores concrete arbitration IDs. Therefore, if the DTI inverter node ID changes, the DTI message IDs in `VUBR.dbc` must be recomputed and checked for conflicts.
 
-- confirm signedness of every inverter register
-- confirm exact scales for speed, voltage, and temperatures
-- decide whether inverter values should keep raw fallback columns during migration
+Example:
+
+```text
+reg_id = 0x20
+inverter_id = 4
+can_id = (0x20 << 5) | 0x04 = 0x404
+```
+
+If the inverter were changed to node ID `19` decimal:
+
+```text
+reg_id = 0x20
+inverter_id = 19 = 0x13
+can_id = (0x20 << 5) | 0x13 = 0x413
+```
+
+That would collide with the current BMS message `BmsSegment2Temperatures` at `0x413`, so node ID changes are not just a DTI setting; they affect the whole CAN architecture.
+
+The DTI payloads are Motorola/big-endian (`@0`) and already include physical scaling from the vendor DBC. Canonical GUI-facing signal names are reused where practical:
+
+- `inverter_speed_actual`: DTI actual ERPM
+- `inverter_vdc_bus`: DTI actual DC input voltage
+- `inverter_iq_command_ramp`: DTI target Iq
+- `inverter_iq_actual`: DTI FOC Iq
+- `inverter_t_igbt`: DTI controller/semiconductor temperature
+- `inverter_t_motor`: DTI motor temperature
+
+Extra DTI-only signals include AC/DC current, duty cycle, fault code, limit flags, throttle/brake, drive-enable state, and configured/available AC/DC current limits.
+
+Open item: confirm whether dashboard speed should display ERPM directly or convert ERPM to mechanical RPM using motor pole-pair count.
+
+#### DTI command frames
+
+Pedalbox now uses generated DBC code from LibCAN to transmit DTI command frames
+instead of calling the old `LibInvertor` helper directly. For inverter node ID
+`4`, the concrete command IDs are:
+
+| Register | CAN ID | DBC message | Purpose |
+| --- | --- | --- | --- |
+| `0x01` | `0x024` (`36`) | `DtiSetAcCurrent` | target AC current |
+| `0x02` | `0x044` (`68`) | `DtiSetBrakeCurrent` | target brake current |
+| `0x03` | `0x064` (`100`) | `DtiSetErpm` | target speed in ERPM |
+| `0x04` | `0x084` (`132`) | `DtiSetPosition` | target motor position |
+| `0x05` | `0x0A4` (`164`) | `DtiSetRelativeCurrent` | relative current command |
+| `0x06` | `0x0C4` (`196`) | `DtiSetRelativeBrakeCurrent` | relative brake current command |
+| `0x07` | `0x0E4` (`228`) | `DtiSetDigitalOutput` | digital output command bits |
+| `0x08` | `0x104` (`260`) | `DtiSetMaxAcCurrent` | configured max AC current |
+| `0x09` | `0x124` (`292`) | `DtiSetMaxAcBrakeCurrent` | configured max AC brake current |
+| `0x0A` | `0x144` (`324`) | `DtiSetMaxDcCurrent` | configured max DC current |
+| `0x0B` | `0x164` (`356`) | `DtiSetMaxDcBrakeCurrent` | configured max DC brake current |
+| `0x0C` | `0x184` (`388`) | `DtiSetDriveEnable` | periodic drive-enable command |
+
+These IDs are also produced by the DTI formula:
+
+```cpp
+can_id = ((reg_id & 0x3F) << 5) | (inverter_id & 0x1F)
+```
+
+Firmware should use the generated `VUBR_CAN_DTI_SET_*_FRAME_ID` constants,
+not handwritten hex IDs.
+
+No ID overlap exists for the current node ID `4` mapping.
 
 ### `BO_ 768 UserStatus`
 
@@ -111,35 +177,32 @@ Open item: confirm pressure units and calibration.
 
 ### `BO_ 784 MasterStatus`
 
-Contains old GUI bit-sliced 10-bit raw values.
+Accumulator/AMS status frame sent by the AMS firmware.
 
 Current signals:
 
-- `ts_current_raw`
-- `ams_temperature_raw`
+- `ts_current`: 16-bit little-endian signed, `raw * 0.1 A`
+- `ams_temperature`: 16-bit little-endian signed, `raw * 0.1 degC`
+- `ams_error_flags`: 8-bit bitfield
+- `sdc_in`: 1-bit boolean
+- `sdc_out`: 1-bit boolean
 
-Legacy packing is unusual:
+This replaces the old 10-bit raw compatibility layout. The Python decoder still
+keeps a narrow legacy correction for old logs/firmware that sent:
 
 - `ts_current_raw = (byte1 << 2) | (byte0 & 0b11)`
 - `ams_temperature_raw = (byte3 << 2) | (byte2 & 0b11)`
 
-That means each value uses the low two bits of one byte plus all eight bits of
-the next byte. A normal DBC little-endian `start|10@1+` signal cannot represent
-that as one contiguous signal; it would consume all eight bits of the first byte
-and two bits of the second byte. During migration, the Python DBC adapter applies
-a narrow compatibility correction for `MasterStatus` so the verification GUI
-matches the old parser.
-
-The SOC estimator currently converts current outside the DBC through `SocConfig`, because current sensor scale, offset, and zero bias still need final confirmation.
+New firmware should send the physical DBC signals above. The SOC estimator uses
+`dbc.ts_current` directly when present and falls back to the old raw conversion
+only for legacy logs.
 
 Assumption for PC model: discharge current is positive. The car currently has no regenerative braking.
 
 Open items:
 
-- confirm current sensor zero raw value
-- confirm current scale in A/raw
-- confirm AMS temperature conversion
-- decide whether these should become physical DBC signals once confirmed
+- confirm final current sensor calibration in AMS firmware
+- define the `ams_error_flags` bit table
 
 ### `BO_ 1312 PowerDistributionStatus`
 
@@ -253,9 +316,9 @@ Open items:
 - decide whether PC should implement complementary/Madgwick/Mahony filtering
 - decide whether bytes 6-7 should become sample counter or IMU status
 
-## BMS Voltage Messages
+## AMS Voltage Messages
 
-Each segment has 24 cell voltages split over three CAN messages:
+Each accumulator segment has 24 cell voltages split over three CAN messages:
 
 - Segment 1: `BmsSegment1VoltagesA/B/C`
 - Segment 2: `BmsSegment2VoltagesA/B/C`
@@ -270,25 +333,105 @@ Current layout:
 
 This represents cell voltages from `2.00 V` to `4.55 V`.
 
-## BMS Temperature Messages
+Note: the message and signal names currently keep the `Bms...` / `bms_s...`
+prefix for GUI compatibility. In Formula Student terminology this module is the
+AMS.
 
-Each segment currently has one temperature message with 8 cell temperature values:
+## AMS Temperature Messages
 
-- Segment 1: `BmsSegment1Temperatures`
-- Segment 2: `BmsSegment2Temperatures`
-- Segment 3: `BmsSegment3Temperatures`
+Each accumulator segment has 10 temperature values split over two CAN messages:
+
+- Segment 1: `BmsSegment1Temperatures` and `BmsSegment1TemperaturesB`
+- Segment 2: `BmsSegment2Temperatures` and `BmsSegment2TemperaturesB`
+- Segment 3: `BmsSegment3Temperatures` and `BmsSegment3TemperaturesB`
 
 Current layout:
 
 - one byte per temperature
-- byte-aligned start bits: `0, 8, 16, ..., 56`
-- physical conversion: `temperature_degC = raw * 0.1`
+- first frame carries temperature channels 1-8
+- second frame carries temperature channels 9-10
+- byte-aligned start bits
+- physical conversion: `temperature_degC = raw * 0.5 - 40`
 
-Open item: current DBC max is `25.5 degC` because the old mapping used one byte with scale `0.1`. That is too low for real accumulator temperatures. We need either a different scale, offset, or wider signal if temperatures above `25.5 degC` must be represented.
+This represents temperatures from `-40.0 degC` to `87.5 degC`, covering the
+cell operating range while keeping each temperature to one byte.
+
+## Inverter Cooling
+
+### `BO_ 1120 InverterCoolingStatus`
+
+This message preserves the legacy cooling CAN ID:
+
+- `KOEL_ID = 0x460`
+- `KOEL_sens = 0x01`
+- `KOEL_PWM = 0x02`
+
+The DBC models this as a multiplexed frame. Byte 0 is the register/multiplexer:
+
+- register `0x01`: sensor/temperature payload
+- register `0x02`: actuator duty payload
+
+Current layout:
+
+- `inverter_cooling_register`: byte 0, multiplexer
+- `inverter_cooling_temp_1`: register `0x01`, bytes 1-2, signed little-endian, `raw * 0.1 degC`
+- `inverter_cooling_temp_2`: register `0x01`, bytes 3-4, signed little-endian, `raw * 0.1 degC`
+- `inverter_cooling_pump_duty`: register `0x02`, byte 1, `0-100 %`
+- `inverter_cooling_vent_duty`: register `0x02`, byte 2, `0-100 %`
+
+The two temperature sensors are currently not read in firmware, but they are kept
+in the DBC so the PC decoder and future firmware have the final signal contract.
+
+Open items:
+
+- confirm which physical locations `temp_1` and `temp_2` represent
+- confirm if percentage values are exact duty cycle percent or command percent
+- confirm whether temperature scale should remain `0.1 degC`
 
 ## Notes For PC Decoder
 
 The PC decoder loads this file with `cantools`.
+
+## Vendor DBC Integration
+
+DBC files do not have a native `import` mechanism like C/C++ or Python. In normal use, the parser receives one flat CAN database file.
+
+For the DTI/HV500 inverter integration, we therefore copied the relevant definitions from the DTI standard-ID vendor DBC into the project master DBC:
+
+- CAN message IDs
+- DLC
+- signal start bits
+- signal lengths
+- byte order
+- signed/unsigned type
+- scale and offset
+- units
+
+The vendor file remains useful reference material, but the runtime parser and firmware code generation should use `VUBR.dbc` as the single source of truth.
+
+Some names were intentionally changed while copying:
+
+- Vendor message names like `HV500_ERPM_DUTY_VOLTAGE` became project names like `DtiErpmDutyVoltage`.
+- Vendor signal names like `Actual_ERPM` became canonical project names like `inverter_speed_actual`.
+- Vendor signal names like `Actual_InputVoltage` became `inverter_vdc_bus`.
+
+This keeps the PC GUI and analysis code independent of the inverter vendor. The dashboard can continue reading `dbc.inverter_speed_actual`, `dbc.inverter_vdc_bus`, `dbc.inverter_iq_actual`, etc., even while the underlying inverter hardware changes.
+
+For now, manual copying is acceptable because there is only one vendor DBC fragment and the copied section is small enough to review. If more vendor DBCs are added, or if the DTI file changes often, we should move to a generated master DBC workflow. One possible structure:
+
+```text
+LibCAN/
+  dbc_fragments/
+    vubr_base.dbc
+    vendor_dti_hv500_sid.dbc
+    power_distribution.dbc
+  tools/
+    build_master_dbc.py
+  include/
+    VUBR.dbc
+```
+
+The build script would combine fragments, rename vendor signals into VUBR canonical names, check for CAN ID conflicts, validate with `cantools`, and write the final `include/VUBR.dbc`.
 
 The decoder returns physical values, not raw values, when DBC scaling is defined. It also handles:
 

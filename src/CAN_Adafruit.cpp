@@ -41,3 +41,30 @@ Message CANAdafruit::read() {
     return result;
 }
 
+bool CANAdafruit::available() {
+    if (hasPending) {
+        return true;
+    }
+
+    uint16_t packet_size = CAN.parsePacket();
+    if (!packet_size) {
+        return false;
+    }
+
+    pending.id = CAN.packetId();
+    pending.packet_size = packet_size;
+    pending.data_field.resize(packet_size);
+    CAN.readBytes(pending.data_field.data(), packet_size);
+    hasPending = true;
+
+    return true;
+}
+
+Message CANAdafruit::receive() {
+    if (hasPending) {
+        hasPending = false;
+        return pending;
+    }
+
+    return read();
+}
