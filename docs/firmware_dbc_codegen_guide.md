@@ -189,6 +189,50 @@ vubr_can_<message_name>_<signal_name>_is_in_range()
 
 The generated `.c` file contains the implementation of these functions.
 
+## Generated Function Data Flow
+
+The generated API separates byte layout from physical scaling. This is the most
+important mental model when using the generated code.
+
+For receiving:
+
+```text
+CAN bytes -> unpack() -> raw struct fields -> decode() -> physical values
+```
+
+For sending:
+
+```text
+physical values -> encode() -> raw struct fields -> pack() -> CAN bytes
+```
+
+The difference between `unpack()` and `decode()` is:
+
+| Function | Input | Output | Purpose |
+| --- | --- | --- | --- |
+| `unpack()` | CAN payload bytes | raw struct fields | bit slicing, endian handling, signed/unsigned extraction |
+| `decode()` | one raw signal value | physical value | DBC scale/offset conversion |
+| `encode()` | one physical value | raw signal value | inverse DBC scale/offset conversion |
+| `pack()` | raw struct fields | CAN payload bytes | bit packing, endian handling |
+
+Example:
+
+```dbc
+SG_ inverter_t_igbt : 7|16@0- (0.1,0) [-55|200] "degC" Vector__XXX
+```
+
+This signal has scale `0.1` and offset `0`, so:
+
+```text
+physical_temperature_degC = raw_integer * 0.1
+```
+
+If `unpack()` returns raw `450`, then `decode(450)` returns `45.0 degC`.
+
+Generated structs store raw bus values, not physical values. That is why
+firmware normally calls `decode()` after `unpack()`, and calls `encode()` before
+`pack()`.
+
 ## Using DBC Names Instead Of Hex IDs
 
 Yes: firmware code should use the generated DBC names instead of handwritten
@@ -252,8 +296,6 @@ Example C++ firmware code:
 
 ```cpp
 #include <stdint.h>
-#include <string.h>
-
 #include "generated/vubr_can.h"  // generated from VUBR.dbc, exposed by LibCAN
 #include "BoardCAN.h"  // board-specific CAN driver
 
@@ -266,7 +308,7 @@ void sendPowerDistributionStatus(
     struct vubr_can_power_distribution_status_t msg;
     uint8_t data[VUBR_CAN_POWER_DISTRIBUTION_STATUS_LENGTH];
 
-    memset(&msg, 0, sizeof(msg));
+    vubr_can_power_distribution_status_init(&msg);
 
     msg.pd_lv_battery_voltage =
         vubr_can_power_distribution_status_pd_lv_battery_voltage_encode(lv_battery_voltage_v);
@@ -311,7 +353,7 @@ void sendPowerDistributionCurrentsA(
     struct vubr_can_power_distribution_currents_a_t msg;
     uint8_t data[VUBR_CAN_POWER_DISTRIBUTION_CURRENTS_A_LENGTH];
 
-    memset(&msg, 0, sizeof(msg));
+    vubr_can_power_distribution_currents_a_init(&msg);
 
     msg.pd_branch_4_current =
         vubr_can_power_distribution_currents_a_pd_branch_4_current_encode(branch_4_current_a);
@@ -430,7 +472,7 @@ void sendPowerDistributionAccel(float accel_x_g, float accel_y_g, float accel_z_
     struct vubr_can_power_distribution_accel_t msg;
     uint8_t data[VUBR_CAN_POWER_DISTRIBUTION_ACCEL_LENGTH];
 
-    memset(&msg, 0, sizeof(msg));
+    vubr_can_power_distribution_accel_init(&msg);
 
     msg.pd_accel_x =
         vubr_can_power_distribution_accel_pd_accel_x_encode(accel_x_g);
@@ -457,6 +499,249 @@ Because the signal scale is `0.001 g/raw`:
 1.000 g  -> raw 1000
 -1.000 g -> raw -1000
 ```
+
+## Sending Indexed SDC Status
+
+The shutdown circuit uses one shared indexed status frame:
+
+```dbc
+BO_ 772 SdcStatus: 2 Vector__XXX
+ SG_ sdc_index : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ sdc_closed : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+```
+
+Current index map:
+
+| Index | Generated choice constant | Sender |
+| --- | --- | --- |
+| `1` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_DASHBOARD_CHOICE` | Dashboard |
+| `2` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_PEDALBOX_CHOICE` | Pedalbox |
+| `3` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_CHOICE` | AMS |
+
+Each module sends the same frame ID, but with its own fixed index. The PC
+dashboard keeps a per-index state map and displays the lowest index that reports
+`sdc_closed == 0` as the earliest known open point.
+
+The dashboard is a special case. It owns the SDC decision/display logic and has
+its own local SDC measurement, so it does not need to transmit index `1` on the
+CAN bus and then receive its own message back. Instead, dashboard firmware builds
+the same generated `SdcStatus` frame in memory and sends that CAN-shaped frame
+directly over LoRa for logging:
+
+```text
+dashboard local SDC input
+  -> generated SdcStatus payload with index 1
+  -> LoRa telemetry frame
+  -> PC raw log / parsed log / GUI
+```
+
+Pedalbox and AMS do transmit their indexed SDC frames on CAN. The dashboard
+receives those frames, updates its SDC display logic, and forwards the received
+frames over LoRa like any other CAN frame.
+
+Dashboard firmware rule:
+
+```text
+Every frame received from CAN is forwarded to LoRa.
+Every frame generated locally by dashboard and sent on CAN is also mirrored to LoRa immediately.
+Dashboard SDC index 1 is not sent on CAN; it is built and sent to LoRa only.
+```
+
+AMS index `3` reports `closed` only when both AMS-side SDC measurements are
+closed:
+
+```cpp
+sdc_closed = SDC_IN && SDC_OUT;
+```
+
+This means:
+
+- `SDC_IN` confirms the shutdown loop reaches the AMS input.
+- `SDC_OUT` confirms the AMS output/relay side is still closed.
+- if either is false, the AMS reports index `3` open.
+
+The dashboard combines the indexed reports in loop order:
+
+```text
+index 1 dashboard
+index 2 pedalbox
+index 3 AMS
+```
+
+The earliest known open point is the lowest index currently reporting open.
+
+Example sender:
+
+```cpp
+void sendSdcStatus(uint8_t index, bool sdc_closed)
+{
+    struct vubr_can_sdc_status_t msg;
+    uint8_t data[VUBR_CAN_SDC_STATUS_LENGTH] = {0};
+
+    vubr_can_sdc_status_init(&msg);
+    msg.sdc_index = vubr_can_sdc_status_sdc_index_encode(index);
+    msg.sdc_closed = vubr_can_sdc_status_sdc_closed_encode(sdc_closed ? 1.0f : 0.0f);
+
+    if (vubr_can_sdc_status_pack(data, &msg, sizeof(data)) < 0) {
+        return;
+    }
+
+    BoardCAN_send(
+        VUBR_CAN_SDC_STATUS_FRAME_ID,
+        data,
+        VUBR_CAN_SDC_STATUS_LENGTH
+    );
+}
+```
+
+## Receiving DTI Temperatures
+
+`DtiTemperatures` is a frame sent by the DTI inverter. Most firmware modules
+should only receive this frame, unpack it, decode the signals they care about,
+and store the physical values in module state.
+
+DBC definition:
+
+```dbc
+BO_ 1092 DtiTemperatures: 8 Inverter
+ SG_ inverter_t_igbt : 7|16@0- (0.1,0) [-55|200] "degC" Vector__XXX
+ SG_ inverter_t_motor : 23|16@0- (0.1,0) [-55|200] "degC" Vector__XXX
+ SG_ inverter_fault_code : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+```
+
+Generated constants:
+
+```cpp
+VUBR_CAN_DTI_TEMPERATURES_FRAME_ID  // 0x444
+VUBR_CAN_DTI_TEMPERATURES_LENGTH    // 8
+```
+
+Generated struct:
+
+```cpp
+struct vubr_can_dti_temperatures_t {
+    int16_t inverter_t_igbt;      // raw, scale 0.1 degC/raw
+    int16_t inverter_t_motor;     // raw, scale 0.1 degC/raw
+    uint8_t inverter_fault_code;  // raw, scale 1
+};
+```
+
+Recommended local application struct:
+
+```cpp
+struct DtiTemperatures {
+    float igbt_deg_c = 0.0f;
+    float motor_deg_c = 0.0f;
+    uint8_t fault_code = 0;
+    bool valid = false;
+};
+```
+
+Reusable decoder:
+
+```cpp
+#include "generated/vubr_can.h"
+
+bool decodeDtiTemperatures(
+    const uint8_t *data,
+    uint8_t dlc,
+    DtiTemperatures &out)
+{
+    if (dlc < VUBR_CAN_DTI_TEMPERATURES_LENGTH) {
+        return false;
+    }
+
+    struct vubr_can_dti_temperatures_t msg;
+    vubr_can_dti_temperatures_init(&msg);
+
+    if (vubr_can_dti_temperatures_unpack(&msg, data, dlc) < 0) {
+        return false;
+    }
+
+    out.igbt_deg_c =
+        vubr_can_dti_temperatures_inverter_t_igbt_decode(msg.inverter_t_igbt);
+
+    out.motor_deg_c =
+        vubr_can_dti_temperatures_inverter_t_motor_decode(msg.inverter_t_motor);
+
+    out.fault_code = msg.inverter_fault_code;
+    out.valid = true;
+
+    return true;
+}
+```
+
+Use it from the board CAN receive callback:
+
+```cpp
+DtiTemperatures dtiTemps;
+
+void onCanFrame(uint32_t can_id, const uint8_t *data, uint8_t dlc)
+{
+    if (can_id != VUBR_CAN_DTI_TEMPERATURES_FRAME_ID) {
+        return;
+    }
+
+    if (!decodeDtiTemperatures(data, dlc, dtiTemps)) {
+        return;
+    }
+
+    if (dtiTemps.igbt_deg_c > 80.0f) {
+        // React to high inverter temperature.
+    }
+}
+```
+
+The function returns `bool` because decoding can fail. The decoded values are
+written into `out`, which is passed by C++ reference.
+
+### Why `const uint8_t *data` But `DtiTemperatures &out`
+
+The CAN payload is a byte buffer. Most CAN drivers provide payload bytes as an
+array or pointer, so the decoder accepts:
+
+```cpp
+const uint8_t *data
+```
+
+`const` means the function reads the CAN bytes but does not modify them.
+
+The output object is passed by reference:
+
+```cpp
+DtiTemperatures &out
+```
+
+This lets the function fill the caller's object without copying it and without
+allowing a null pointer. A pointer-based output is also valid:
+
+```cpp
+bool decodeDtiTemperatures(const uint8_t *data, uint8_t dlc, DtiTemperatures *out)
+```
+
+but then the function must check `out != nullptr`, and callers must pass
+`&temps`. For C++ firmware, a reference is usually clearer for required output
+objects.
+
+### What `init()` Does
+
+Generated init functions clear the message struct and apply generated defaults.
+For this message, the implementation is effectively:
+
+```cpp
+memset(msg_p, 0, sizeof(struct vubr_can_dti_temperatures_t));
+```
+
+Use:
+
+```cpp
+struct vubr_can_dti_temperatures_t msg;
+vubr_can_dti_temperatures_init(&msg);
+```
+
+before packing, and preferably before unpacking as a consistent pattern. For
+this specific message, `unpack()` fills every field, so `init()` is not strictly
+required before unpacking, but it is cheap and keeps receive code predictable.
 
 ## Avoiding Floating Point On MCU
 
@@ -492,9 +777,18 @@ msg.pd_accel_x = encodeMilliG(accel_x_g);
 The generated `pack()` still handles byte layout, endian conversion, and bit
 placement.
 
-## Receiving A Message On Firmware
+## Receiving A Generic Message On Firmware
 
-If a firmware module receives a CAN frame and wants to decode only one message:
+If a firmware module receives a CAN frame and wants to decode only one message,
+the pattern is always:
+
+1. Compare `can_id` with the generated `*_FRAME_ID`.
+2. Check `dlc` against the generated `*_LENGTH`.
+3. Create the generated message struct.
+4. Call the generated `*_init()` helper.
+5. Call the generated `*_unpack()` helper.
+6. Call generated `*_decode()` helpers for the signals you need.
+7. Store/use the physical values in your firmware logic.
 
 ```cpp
 void onCanFrame(uint32_t can_id, const uint8_t *data, uint8_t dlc)
@@ -502,11 +796,13 @@ void onCanFrame(uint32_t can_id, const uint8_t *data, uint8_t dlc)
     if (can_id == VUBR_CAN_POWER_DISTRIBUTION_STATUS_FRAME_ID) {
         struct vubr_can_power_distribution_status_t msg;
 
+        vubr_can_power_distribution_status_init(&msg);
+
         if (vubr_can_power_distribution_status_unpack(&msg, data, dlc) < 0) {
             return;
         }
 
-        double lv_voltage =
+        float lv_voltage =
             vubr_can_power_distribution_status_pd_lv_battery_voltage_decode(
                 msg.pd_lv_battery_voltage
             );
@@ -518,6 +814,65 @@ void onCanFrame(uint32_t can_id, const uint8_t *data, uint8_t dlc)
 
 The firmware still chooses which frame IDs it cares about. It does not need to
 process every message in the DBC.
+
+### Using `std::vector<uint8_t>` Payloads
+
+Some VUBR firmware CAN wrappers store payload bytes in a `std::vector<uint8_t>`,
+for example:
+
+```cpp
+Message read = myCAN.receive();
+// read.data_field is std::vector<uint8_t>
+```
+
+The generated unpack functions expect a pointer to contiguous bytes:
+
+```cpp
+const uint8_t *src_p
+```
+
+Use `.data()` to pass the vector's underlying byte buffer:
+
+```cpp
+if (read.id == VUBR_CAN_SDC_STATUS_FRAME_ID &&
+    read.packet_size >= VUBR_CAN_SDC_STATUS_LENGTH &&
+    read.data_field.size() >= VUBR_CAN_SDC_STATUS_LENGTH) {
+
+    struct vubr_can_sdc_status_t msg;
+    vubr_can_sdc_status_init(&msg);
+
+    if (vubr_can_sdc_status_unpack(&msg, read.data_field.data(), read.packet_size) < 0) {
+        return;
+    }
+
+    uint8_t index = msg.sdc_index;
+    bool closed = vubr_can_sdc_status_sdc_closed_decode(msg.sdc_closed) >= 0.5f;
+
+    // Use index and closed here.
+}
+```
+
+Important checks:
+
+- check the CAN ID before unpacking
+- check both the reported DLC/packet size and the vector size
+- only call `.data()` after confirming the vector contains enough bytes
+
+For sending, pack into a fixed array first, then copy the bytes into the vector
+owned by the board CAN wrapper:
+
+```cpp
+uint8_t data[VUBR_CAN_SDC_STATUS_LENGTH] = {0};
+
+if (vubr_can_sdc_status_pack(data, &msg, sizeof(data)) < 0) {
+    return;
+}
+
+Message frame;
+frame.id = VUBR_CAN_SDC_STATUS_FRAME_ID;
+frame.packet_size = VUBR_CAN_SDC_STATUS_LENGTH;
+frame.data_field.assign(data, data + VUBR_CAN_SDC_STATUS_LENGTH);
+```
 
 ## Recommended Build Practice
 

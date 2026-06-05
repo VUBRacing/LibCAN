@@ -175,6 +175,42 @@ Current assumption: 16-bit little-endian raw value.
 
 Open item: confirm pressure units and calibration.
 
+### `BO_ 772 SdcStatus`
+
+Indexed shutdown-circuit measurement frame.
+
+This frame is intentionally shared by multiple modules. Each sender transmits
+the same CAN ID with:
+
+- `sdc_index`: measurement point in loop order
+- `sdc_closed`: `1` when that point still sees the closed 12 V SDC loop, `0`
+  when the loop is open at or before that point
+
+Current index map:
+
+| Index | Sender | Meaning |
+| --- | --- | --- |
+| `1` | Dashboard | Earliest/current first dashboard-side SDC measurement |
+| `2` | Pedalbox | Pedalbox SDC measurement |
+| `3` | AMS | AMS SDC measurement; firmware reports closed only when both AMS input and output are closed |
+
+Dashboard index `1` is not transmitted onto the CAN bus by the dashboard
+firmware. The dashboard owns the local SDC measurement and the SDC display
+logic, so it builds the same `SdcStatus` payload and sends it directly over LoRa
+for PC logging. This keeps the raw telemetry log complete without requiring the
+dashboard to listen to its own CAN transmission.
+
+Pedalbox index `2` and AMS index `3` are normal CAN messages. The dashboard
+receives them, updates its SDC status logic, and forwards the received CAN
+frames over LoRa.
+
+The PC dashboard keeps a per-index state map. The earliest open point is the
+lowest known index where `sdc_closed == 0`.
+
+This replaces the old max-hold idea. The current state can change back to
+closed without power-cycling, and the raw log still preserves the exact sequence
+for later fault analysis.
+
 ### `BO_ 784 MasterStatus`
 
 Accumulator/AMS status frame sent by the AMS firmware.
