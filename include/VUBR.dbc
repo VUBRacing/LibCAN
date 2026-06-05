@@ -167,6 +167,9 @@ BO_ 772 SdcStatus: 2 Vector__XXX
  SG_ sdc_index : 0|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ sdc_closed : 8|1@1+ (1,0) [0|1] "" Vector__XXX
 
+BO_ 773 PedalboxStatus: 1 Pedalbox
+ SG_ bspd_hard_braking : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
 BO_ 784 MasterStatus: 8 AMS
  SG_ ts_current : 0|16@1- (0.1,0) [-3276.8|3276.7] "A" Vector__XXX
  SG_ ams_temperature : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" Vector__XXX
@@ -341,4 +344,4 @@ BO_ 1316 PowerDistributionGyro: 8 PowerDistribution
 
 VAL_ 21 dashboard_event 1 "R2D button on" 2 "R2D switch on" 3 "R2D switch off" 4 "SW1 on" 5 "SW1 off" 6 "SW2 on" 7 "SW2 off";
 VAL_ 768 user_state 1 "off" 2 "before_precharge" 3 "precharge" 4 "after_precharge" 5 "calibration_min" 6 "calibration_max" 7 "last_step" 8 "on" 9 "test" 16 "bspd";
-VAL_ 772 sdc_index 1 "dashboard" 2 "pedalbox" 3 "ams";
+VAL_ 772 sdc_index 1 "dashboard" 2 "pedalbox" 3 "ams_in" 4 "ams_out";

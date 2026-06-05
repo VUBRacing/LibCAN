@@ -192,7 +192,8 @@ Current index map:
 | --- | --- | --- |
 | `1` | Dashboard | Earliest/current first dashboard-side SDC measurement |
 | `2` | Pedalbox | Pedalbox SDC measurement |
-| `3` | AMS | AMS SDC measurement; firmware reports closed only when both AMS input and output are closed |
+| `3` | AMS | AMS input measurement, before the AMS relay |
+| `4` | AMS | AMS output/effective measurement, after the AMS relay |
 
 Dashboard index `1` is not transmitted onto the CAN bus by the dashboard
 firmware. The dashboard owns the local SDC measurement and the SDC display
@@ -200,9 +201,19 @@ logic, so it builds the same `SdcStatus` payload and sends it directly over LoRa
 for PC logging. This keeps the raw telemetry log complete without requiring the
 dashboard to listen to its own CAN transmission.
 
-Pedalbox index `2` and AMS index `3` are normal CAN messages. The dashboard
-receives them, updates its SDC status logic, and forwards the received CAN
-frames over LoRa.
+Pedalbox index `2`, AMS input index `3`, and AMS output index `4` are normal
+CAN messages. The dashboard receives them, updates its SDC status logic, and
+forwards the received CAN frames over LoRa.
+
+AMS index `3` is the direct `SDC_IN` measurement. AMS index `4` currently uses:
+
+```cpp
+SDC_IN && SDC_OUT
+```
+
+where `SDC_IN` means the SDC loop reaches the AMS input and `SDC_OUT` is the AMS
+internal output/relay state. If index `3` is closed and index `4` is open, the
+AMS is the earliest known module opening the SDC.
 
 The PC dashboard keeps a per-index state map. The earliest open point is the
 lowest known index where `sdc_closed == 0`.
@@ -210,6 +221,27 @@ lowest known index where `sdc_closed == 0`.
 This replaces the old max-hold idea. The current state can change back to
 closed without power-cycling, and the raw log still preserves the exact sequence
 for later fault analysis.
+
+### `BO_ 773 PedalboxStatus`
+
+Pedalbox status frame.
+
+Current signals:
+
+- `bspd_hard_braking`: boolean copy of the BSPD hard-braking output read by the
+  pedalbox
+
+The BSPD hard-braking signal means the BSPD sees the hard-braking condition
+active. In project terms this is approximately:
+
+```text
+brake pressure > 30 bar and tractive power > 5 kW
+```
+
+The exact thresholds are implemented in the BSPD hardware/firmware, not in the
+DBC. A high value is useful telemetry because if this condition remains active
+longer than the BSPD trip delay, approximately 500 ms, the BSPD should open the
+SDC. The PC GUI only displays/logs the state; it must not be the safety logic.
 
 ### `BO_ 784 MasterStatus`
 

@@ -516,7 +516,8 @@ Current index map:
 | --- | --- | --- |
 | `1` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_DASHBOARD_CHOICE` | Dashboard |
 | `2` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_PEDALBOX_CHOICE` | Pedalbox |
-| `3` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_CHOICE` | AMS |
+| `3` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_IN_CHOICE` | AMS input, before AMS relay |
+| `4` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_OUT_CHOICE` | AMS output, after AMS relay |
 
 Each module sends the same frame ID, but with its own fixed index. The PC
 dashboard keeps a per-index state map and displays the lowest index that reports
@@ -547,8 +548,16 @@ Every frame generated locally by dashboard and sent on CAN is also mirrored to L
 Dashboard SDC index 1 is not sent on CAN; it is built and sent to LoRa only.
 ```
 
-AMS index `3` reports `closed` only when both AMS-side SDC measurements are
-closed:
+AMS sends two SDC points:
+
+```cpp
+sendSdcStatus(VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_IN_CHOICE, SDC_IN);
+sendSdcStatus(VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_OUT_CHOICE, SDC_IN && SDC_OUT);
+```
+
+Index `3` is the direct AMS input measurement. Index `4` is the effective AMS
+output measurement and currently reports `closed` only when both AMS-side states
+are closed:
 
 ```cpp
 sdc_closed = SDC_IN && SDC_OUT;
@@ -558,14 +567,16 @@ This means:
 
 - `SDC_IN` confirms the shutdown loop reaches the AMS input.
 - `SDC_OUT` confirms the AMS output/relay side is still closed.
-- if either is false, the AMS reports index `3` open.
+- if index `3` is closed but index `4` is open, AMS is the earliest known module
+  opening the SDC.
 
 The dashboard combines the indexed reports in loop order:
 
 ```text
 index 1 dashboard
 index 2 pedalbox
-index 3 AMS
+index 3 AMS input
+index 4 AMS output
 ```
 
 The earliest known open point is the lowest index currently reporting open.
@@ -593,6 +604,51 @@ void sendSdcStatus(uint8_t index, bool sdc_closed)
     );
 }
 ```
+
+## Sending Pedalbox BSPD Status
+
+The pedalbox reads the BSPD hard-braking output and publishes it on
+`PedalboxStatus`:
+
+```dbc
+BO_ 773 PedalboxStatus: 1 Pedalbox
+ SG_ bspd_hard_braking : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+```
+
+Generated constants:
+
+```cpp
+VUBR_CAN_PEDALBOX_STATUS_FRAME_ID  // 0x305
+VUBR_CAN_PEDALBOX_STATUS_LENGTH    // 1
+```
+
+Example sender:
+
+```cpp
+void sendPedalboxStatus(bool bspd_hard_braking)
+{
+    struct vubr_can_pedalbox_status_t msg;
+    uint8_t data[VUBR_CAN_PEDALBOX_STATUS_LENGTH] = {0};
+
+    vubr_can_pedalbox_status_init(&msg);
+    msg.bspd_hard_braking =
+        vubr_can_pedalbox_status_bspd_hard_braking_encode(bspd_hard_braking ? 1.0f : 0.0f);
+
+    if (vubr_can_pedalbox_status_pack(data, &msg, sizeof(data)) < 0) {
+        return;
+    }
+
+    BoardCAN_send(
+        VUBR_CAN_PEDALBOX_STATUS_FRAME_ID,
+        data,
+        VUBR_CAN_PEDALBOX_STATUS_LENGTH
+    );
+}
+```
+
+This frame is telemetry. The BSPD safety action still belongs to the BSPD
+hardware/firmware path. The GUI can display when hard braking is active, but it
+must not be part of the shutdown decision.
 
 ## Receiving DTI Temperatures
 
