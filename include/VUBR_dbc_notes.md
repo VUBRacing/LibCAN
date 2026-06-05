@@ -194,6 +194,7 @@ Current index map:
 | `2` | Pedalbox | Pedalbox SDC measurement |
 | `3` | AMS | AMS input measurement, before the AMS relay |
 | `4` | AMS | AMS output/effective measurement, after the AMS relay |
+| `5` | PowerDistribution | Precharge-side/end-of-loop SDC measurement |
 
 Dashboard index `1` is not transmitted onto the CAN bus by the dashboard
 firmware. The dashboard owns the local SDC measurement and the SDC display
@@ -201,9 +202,10 @@ logic, so it builds the same `SdcStatus` payload and sends it directly over LoRa
 for PC logging. This keeps the raw telemetry log complete without requiring the
 dashboard to listen to its own CAN transmission.
 
-Pedalbox index `2`, AMS input index `3`, and AMS output index `4` are normal
-CAN messages. The dashboard receives them, updates its SDC status logic, and
-forwards the received CAN frames over LoRa.
+Pedalbox index `2`, AMS input index `3`, AMS output index `4`, and
+PowerDistribution/precharge-end index `5` are normal CAN messages. The dashboard
+receives them, updates its SDC status logic, and forwards the received CAN
+frames over LoRa.
 
 AMS index `3` is the direct `SDC_IN` measurement. AMS index `4` currently uses:
 
@@ -214,6 +216,9 @@ SDC_IN && SDC_OUT
 where `SDC_IN` means the SDC loop reaches the AMS input and `SDC_OUT` is the AMS
 internal output/relay state. If index `3` is closed and index `4` is open, the
 AMS is the earliest known module opening the SDC.
+
+PowerDistribution index `5` is intentionally last in the loop order and lowest
+priority. It represents the precharge-side/end-of-loop SDC measurement.
 
 The PC dashboard keeps a per-index state map. The earliest open point is the
 lowest known index where `sdc_closed == 0`.

@@ -518,6 +518,7 @@ Current index map:
 | `2` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_PEDALBOX_CHOICE` | Pedalbox |
 | `3` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_IN_CHOICE` | AMS input, before AMS relay |
 | `4` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_AMS_OUT_CHOICE` | AMS output, after AMS relay |
+| `5` | `VUBR_CAN_SDC_STATUS_SDC_INDEX_PRECHARGE_END_CHOICE` | PowerDistribution precharge-side/end-of-loop measurement |
 
 Each module sends the same frame ID, but with its own fixed index. The PC
 dashboard keeps a per-index state map and displays the lowest index that reports
@@ -577,6 +578,7 @@ index 1 dashboard
 index 2 pedalbox
 index 3 AMS input
 index 4 AMS output
+index 5 precharge end
 ```
 
 The earliest known open point is the lowest index currently reporting open.
