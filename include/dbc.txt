@@ -33,7 +33,7 @@ NS_ :
 
 BS_:
 
-BU_: Vector__XXX BMS VCU Inverter InverterCooling Precharge Dashboard PowerDistribution Pedalbox
+BU_: Vector__XXX AMS BMS VCU Inverter InverterCooling Precharge Dashboard PowerDistribution Pedalbox
 
 BO_ 1 Error: 1 Vector__XXX
  SG_ error_code : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -163,11 +163,21 @@ BO_ 770 BRAKESENS1_AVAL_ID: 2 VCU
 BO_ 771 BRAKESENS2_AVAL_ID: 2 VCU
  SG_ brake_pressure_2 : 0|16@1+ (1,0) [0|65535] "raw" Vector__XXX
 
-BO_ 784 MasterStatus: 8 VCU
- SG_ ts_current_raw : 0|10@1+ (1,0) [0|1023] "" Vector__XXX
- SG_ ams_temperature_raw : 16|10@1+ (1,0) [0|1023] "" Vector__XXX
+BO_ 772 SdcStatus: 2 Vector__XXX
+ SG_ sdc_index : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ sdc_closed : 8|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 1024 BmsSegment1VoltagesA: 8 BMS
+BO_ 773 PedalboxStatus: 1 Pedalbox
+ SG_ bspd_hard_braking : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 784 MasterStatus: 8 AMS
+ SG_ ts_current : 0|16@1- (0.1,0) [-3276.8|3276.7] "A" Vector__XXX
+ SG_ ams_temperature : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" Vector__XXX
+ SG_ ams_error_flags : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ sdc_in : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sdc_out : 41|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1024 BmsSegment1VoltagesA: 8 AMS
  SG_ bms_s1_cell01_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell02_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell03_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -177,7 +187,7 @@ BO_ 1024 BmsSegment1VoltagesA: 8 BMS
  SG_ bms_s1_cell07_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell08_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1025 BmsSegment1VoltagesB: 8 BMS
+BO_ 1025 BmsSegment1VoltagesB: 8 AMS
  SG_ bms_s1_cell09_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell10_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell11_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -187,7 +197,7 @@ BO_ 1025 BmsSegment1VoltagesB: 8 BMS
  SG_ bms_s1_cell15_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell16_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1026 BmsSegment1VoltagesC: 8 BMS
+BO_ 1026 BmsSegment1VoltagesC: 8 AMS
  SG_ bms_s1_cell17_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell18_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell19_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -197,17 +207,21 @@ BO_ 1026 BmsSegment1VoltagesC: 8 BMS
  SG_ bms_s1_cell23_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s1_cell24_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1027 BmsSegment1Temperatures: 8 BMS
- SG_ bms_s1_cell01_temperature : 0|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s1_cell02_temperature : 8|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s1_cell03_temperature : 16|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s1_cell04_temperature : 24|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s1_cell05_temperature : 32|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s1_cell06_temperature : 40|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s1_cell07_temperature : 48|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s1_cell08_temperature : 56|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+BO_ 1027 BmsSegment1Temperatures: 8 AMS
+ SG_ bms_s1_cell01_temperature : 0|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell02_temperature : 8|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell03_temperature : 16|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell04_temperature : 24|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell05_temperature : 32|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell06_temperature : 40|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell07_temperature : 48|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell08_temperature : 56|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
 
-BO_ 1040 BmsSegment2VoltagesA: 8 BMS
+BO_ 1029 BmsSegment1TemperaturesB: 2 AMS
+ SG_ bms_s1_cell09_temperature : 0|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s1_cell10_temperature : 8|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+
+BO_ 1040 BmsSegment2VoltagesA: 8 AMS
  SG_ bms_s2_cell01_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell02_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell03_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -217,7 +231,7 @@ BO_ 1040 BmsSegment2VoltagesA: 8 BMS
  SG_ bms_s2_cell07_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell08_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1041 BmsSegment2VoltagesB: 8 BMS
+BO_ 1041 BmsSegment2VoltagesB: 8 AMS
  SG_ bms_s2_cell09_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell10_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell11_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -227,7 +241,7 @@ BO_ 1041 BmsSegment2VoltagesB: 8 BMS
  SG_ bms_s2_cell15_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell16_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1042 BmsSegment2VoltagesC: 8 BMS
+BO_ 1042 BmsSegment2VoltagesC: 8 AMS
  SG_ bms_s2_cell17_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell18_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell19_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -237,17 +251,21 @@ BO_ 1042 BmsSegment2VoltagesC: 8 BMS
  SG_ bms_s2_cell23_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s2_cell24_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1043 BmsSegment2Temperatures: 8 BMS
- SG_ bms_s2_cell01_temperature : 0|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s2_cell02_temperature : 8|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s2_cell03_temperature : 16|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s2_cell04_temperature : 24|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s2_cell05_temperature : 32|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s2_cell06_temperature : 40|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s2_cell07_temperature : 48|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s2_cell08_temperature : 56|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+BO_ 1043 BmsSegment2Temperatures: 8 AMS
+ SG_ bms_s2_cell01_temperature : 0|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell02_temperature : 8|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell03_temperature : 16|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell04_temperature : 24|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell05_temperature : 32|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell06_temperature : 40|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell07_temperature : 48|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell08_temperature : 56|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
 
-BO_ 1056 BmsSegment3VoltagesA: 8 BMS
+BO_ 1045 BmsSegment2TemperaturesB: 2 AMS
+ SG_ bms_s2_cell09_temperature : 0|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s2_cell10_temperature : 8|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+
+BO_ 1056 BmsSegment3VoltagesA: 8 AMS
  SG_ bms_s3_cell01_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell02_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell03_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -257,7 +275,7 @@ BO_ 1056 BmsSegment3VoltagesA: 8 BMS
  SG_ bms_s3_cell07_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell08_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1057 BmsSegment3VoltagesB: 8 BMS
+BO_ 1057 BmsSegment3VoltagesB: 8 AMS
  SG_ bms_s3_cell09_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell10_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell11_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -267,7 +285,7 @@ BO_ 1057 BmsSegment3VoltagesB: 8 BMS
  SG_ bms_s3_cell15_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell16_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1058 BmsSegment3VoltagesC: 8 BMS
+BO_ 1058 BmsSegment3VoltagesC: 8 AMS
  SG_ bms_s3_cell17_voltage : 0|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell18_voltage : 8|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell19_voltage : 16|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
@@ -277,15 +295,19 @@ BO_ 1058 BmsSegment3VoltagesC: 8 BMS
  SG_ bms_s3_cell23_voltage : 48|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
  SG_ bms_s3_cell24_voltage : 56|8@1+ (0.01,2) [2|4.55] "V" Vector__XXX
 
-BO_ 1059 BmsSegment3Temperatures: 8 BMS
- SG_ bms_s3_cell01_temperature : 0|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s3_cell02_temperature : 8|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s3_cell03_temperature : 16|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s3_cell04_temperature : 24|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s3_cell05_temperature : 32|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s3_cell06_temperature : 40|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s3_cell07_temperature : 48|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
- SG_ bms_s3_cell08_temperature : 56|8@1+ (0.1,0) [0|25.5] "degC" Vector__XXX
+BO_ 1059 BmsSegment3Temperatures: 8 AMS
+ SG_ bms_s3_cell01_temperature : 0|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell02_temperature : 8|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell03_temperature : 16|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell04_temperature : 24|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell05_temperature : 32|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell06_temperature : 40|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell07_temperature : 48|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell08_temperature : 56|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+
+BO_ 1061 BmsSegment3TemperaturesB: 2 AMS
+ SG_ bms_s3_cell09_temperature : 0|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+ SG_ bms_s3_cell10_temperature : 8|8@1+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
 
 BO_ 1120 InverterCoolingStatus: 8 InverterCooling
  SG_ inverter_cooling_register M : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -322,3 +344,4 @@ BO_ 1316 PowerDistributionGyro: 8 PowerDistribution
 
 VAL_ 21 dashboard_event 1 "R2D button on" 2 "R2D switch on" 3 "R2D switch off" 4 "SW1 on" 5 "SW1 off" 6 "SW2 on" 7 "SW2 off";
 VAL_ 768 user_state 1 "off" 2 "before_precharge" 3 "precharge" 4 "after_precharge" 5 "calibration_min" 6 "calibration_max" 7 "last_step" 8 "on" 9 "test" 16 "bspd";
+VAL_ 772 sdc_index 1 "dashboard" 2 "pedalbox" 3 "ams_in" 4 "ams_out" 5 "precharge_end";
