@@ -344,13 +344,13 @@ BO_ 1316 PowerDistributionGyro: 8 PowerDistribution
 
 
 BO_ 1400 LinearSensorsNode1: 4 FeatherRP2040_1
-  SG_ lin_sensor_1_pos : 0|16@1+ (0.01,0) [-50|50] "mm" Vector__XXX
-  SG_ lin_sensor_2_pos : 16|16@1+ (0.01,0) [-50|50] "mm" Vector__XXX
+  SG_ lin_sensor_1_pos : 0|16@1- (0.01,0) [-50|50] "mm" Vector__XXX
+  SG_ lin_sensor_2_pos : 16|16@1- (0.01,0) [-50|50] "mm" Vector__XXX
   
 
 BO_ 1401 LinearSensorsNode2: 4 FeatherRP2040_2
-  SG_ lin_sensor_3_pos : 0|16@1+ (0.01,0) [-50|50] "mm" Vector__XXX
-  SG_ lin_sensor_4_pos : 16|16@1+ (0.01,0) [-50|50] "mm" Vector__XXX
+  SG_ lin_sensor_3_pos : 0|16@1- (0.01,0) [-50|50] "mm" Vector__XXX
+  SG_ lin_sensor_4_pos : 16|16@1- (0.01,0) [-50|50] "mm" Vector__XXX
 
 VAL_ 21 dashboard_event 1 "R2D button on" 2 "R2D switch on" 3 "R2D switch off" 4 "SW1 on" 5 "SW1 off" 6 "SW2 on" 7 "SW2 off";
 VAL_ 768 user_state 1 "off" 2 "before_precharge" 3 "precharge" 4 "after_precharge" 5 "calibration_min" 6 "calibration_max" 7 "last_step" 8 "on" 9 "test" 16 "bspd";
