@@ -333,15 +333,19 @@ BO_ 1314 PowerDistributionCurrentsB: 8 PowerDistribution
  SG_ pd_branch_9_current : 16|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
 
 BO_ 1315 PowerDistributionAccel: 8 PowerDistribution
- SG_ pd_accel_x : 0|16@1- (0.001,0) [-32.768|32.767] "g" Vector__XXX
- SG_ pd_accel_y : 16|16@1- (0.001,0) [-32.768|32.767] "g" Vector__XXX
- SG_ pd_accel_z : 32|16@1- (0.001,0) [-32.768|32.767] "g" Vector__XXX
+ SG_ pd_accel_x : 0|16@1- (0.001,0) [-40|40] "g" Vector__XXX
+ SG_ pd_accel_y : 16|16@1- (0.001,0) [-40|40] "g" Vector__XXX
+ SG_ pd_accel_z : 32|16@1- (0.001,0) [-40|40] "g" Vector__XXX
 
 BO_ 1316 PowerDistributionGyro: 8 PowerDistribution
- SG_ pd_gyro_x : 0|16@1- (0.01,0) [-327.68|327.67] "deg/s" Vector__XXX
- SG_ pd_gyro_y : 16|16@1- (0.01,0) [-327.68|327.67] "deg/s" Vector__XXX
- SG_ pd_gyro_z : 32|16@1- (0.01,0) [-327.68|327.67] "deg/s" Vector__XXX
+ SG_ pd_gyro_x : 0|16@1- (0.01,0) [-250|250] "deg/s" Vector__XXX
+ SG_ pd_gyro_y : 16|16@1- (0.01,0) [-250|250] "deg/s" Vector__XXX
+ SG_ pd_gyro_z : 32|16@1- (0.01,0) [-250|250] "deg/s" Vector__XXX
 
+BO_ 1317 PowerDistributionDegree: 8 PowerDistribution
+ SG_ pd_deg_x : 0|16@1- (0.01,0) [-180|180] "deg" Vector__XXX
+ SG_ pd_deg_y : 16|16@1- (0.01,0) [-180|180] "deg" Vector__XXX
+ SG_ pd_deg_z : 32|16@1- (0.01,0) [-180|180] "deg" Vector__XXX
 
 BO_ 1400 LinearSensorsNode1: 4 FeatherRP2040_1
   SG_ lin_sensor_1_pos : 0|16@1- (0.01,0) [-50|50] "mm" Vector__XXX
