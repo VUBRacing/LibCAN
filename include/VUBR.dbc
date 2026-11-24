@@ -333,9 +333,9 @@ BO_ 1314 PowerDistributionCurrentsB: 8 PowerDistribution
  SG_ pd_branch_9_current : 16|16@1+ (0.01,0) [0|655.35] "A" Vector__XXX
 
 BO_ 1315 PowerDistributionAccel: 8 PowerDistribution
- SG_ pd_accel_x : 0|16@1- (0.001,0) [-40|40] "g" Vector__XXX
- SG_ pd_accel_y : 16|16@1- (0.001,0) [-40|40] "g" Vector__XXX
- SG_ pd_accel_z : 32|16@1- (0.001,0) [-40|40] "g" Vector__XXX
+ SG_ pd_accel_x : 0|16@1- (0.001,0) [-40|40] "m/s2" Vector__XXX
+ SG_ pd_accel_y : 16|16@1- (0.001,0) [-40|40] "m/s2" Vector__XXX
+ SG_ pd_accel_z : 32|16@1- (0.001,0) [-40|40] "m/s2" Vector__XXX
 
 BO_ 1316 PowerDistributionGyro: 8 PowerDistribution
  SG_ pd_gyro_x : 0|16@1- (0.01,0) [-250|250] "deg/s" Vector__XXX
